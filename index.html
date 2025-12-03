@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Friends Café</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* ======================== GLOBAL ======================== */
+      body {
+        margin: 0;
+        font-family: Poppins, sans-serif;
+        background: linear-gradient(135deg, #ffe6f3, #fffaf5, #e7fcff);
+        background-size: 300% 300%;
+        animation: bgMove 14s infinite alternate;
+      }
+      @keyframes bgMove {
+        from {
+          background-position: left;
+        }
+        to {
+          background-position: right;
+        }
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background: #ffffffcf;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 0 15px #ffd6ff;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .back-btn {
+        font-size: 21px;
+        cursor: pointer;
+        margin-right: 12px;
+        display: none;
+      }
+
+      h2,
+      h1,
+      h3,
+      p {
+        margin: 0;
+        color: #3c2f2f;
+      }
+
+      .container {
+        padding: 20px;
+        animation: fade 0.5s;
+      }
+      @keyframes fade {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ======================== HOME PAGE ======================== */
+      .home-title {
+        font-size: 26px;
+        text-align: center;
+        margin-top: 15px;
+        font-weight: 600;
+      }
+
+      .category-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-top: 25px;
+      }
+
+      .cat-card {
+        padding: 18px;
+        background: #ffffffd9;
+        border-radius: 15px;
+        text-align: center;
+        font-weight: 500;
+        box-shadow: 0 0 15px #ffdfff;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      .cat-card:hover {
+        transform: scale(1.05);
+      }
+
+      /* ======================== MENU BOX ======================== */
+      .menu-box {
+        width: 90%;
+        margin: 20px auto;
+        padding: 18px;
+        background: #ffffffd9;
+        border-radius: 15px;
+        box-shadow: 0 0 18px #ffd6ff;
+      }
+      .item {
+        padding: 12px;
+        margin: 10px 0;
+        background: #fff7ff;
+        border-radius: 12px;
+        display: flex;
+        justify-content: space-between;
+        box-shadow: 0 0 10px #ffd4ff;
+      }
+
+      /* ======================== POPUP ======================== */
+      #popup {
+        position: fixed;
+        bottom: 25px;
+        right: 20px;
+        background: #ffffffdc;
+        padding: 18px;
+        border-radius: 15px;
+        box-shadow: 0 0 18px #ffcef8;
+        backdrop-filter: blur(7px);
+        animation: pop 0.5s;
+        display: none;
+        width: 250px;
+      }
+      @keyframes pop {
+        from {
+          opacity: 0;
+          transform: translateY(15px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      #popup close {
+        float: right;
+      }
+
+      /* ======================== FOOTER ======================== */
+      footer {
+        text-align: center;
+        margin: 20px 0;
+        color: #3c2f2f;
+        font-weight: 500;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ======================== HEADER ======================== -->
+    <header>
+      <span class="back-btn" id="backBtn" onclick="goHome()">⬅</span>
+      <h2 id="pageTitle">Friends Café</h2>
+    </header>
+
+    <!-- ======================== HOME PAGE ======================== -->
+    <div id="homePage" class="container">
+      <h1 class="home-title">☕ Friends Café</h1>
+
+      <div class="category-grid">
+        <div class="cat-card" onclick="openMenu('pizza')">🍕 Pizza</div>
+        <div class="cat-card" onclick="openMenu('fries')">🍟 Fries</div>
+        <div class="cat-card" onclick="openMenu('sandwich')">🥪 Sandwich</div>
+        <div class="cat-card" onclick="openMenu('pasta')">🍝 Pasta</div>
+        <div class="cat-card" onclick="openMenu('burger')">🍔 Burger</div>
+        <div class="cat-card" onclick="openMenu('shakes')">🥤 Shakes</div>
+      </div>
+    </div>
+
+    <!-- ======================== MENU PAGES ======================== -->
+    <div id="menuPage" class="hidden container">
+      <h2 id="menuName"></h2>
+
+      <div id="menuBox" class="menu-box"></div>
+    </div>
+
+    <!-- ======================== POPUP ======================== -->
+    <div id="popup">
+      <p id="popupMsg">✨ Something interesting is waiting for you…</p>
+    </div>
+
+    <footer>Made by <b>V.S Rathore</b></footer>
+
+    <script>
+      /* ===========================================================
+   MENU DATA
+===========================================================*/
+      const menus = {
+        pizza: [
+          ["Margherita", "89 / 129 / 159"],
+          ["Onion", "89 /129 /159"],
+          ["Corn", "89 /129 /159"],
+          ["Capsicum", "89 /129 /159"],
+          ["CTC", "99 /149 /169"],
+          ["Paneer", "129 /169 /199"],
+          ["Paneer Onion", "139 /179 /209"],
+          ["Peppy Paneer", "149 /189 /219"],
+          ["Garden Fresh", "159 /199 /229"],
+          ["DCC Special", "199 /249 /279"],
+        ],
+
+        fries: [
+          ["French Fries", "59"],
+          ["Peri Peri Fries", "69"],
+          ["Cheese Fries", "79"],
+        ],
+
+        sandwich: [
+          ["Peanut Butter Sandwich", "49"],
+          ["Bombay Sandwich", "49"],
+          ["Veg Sandwich (Grilled)", "59"],
+          ["Masala Sandwich (Grilled)", "59"],
+          ["Veg Cheese Grilled", "69"],
+          ["Paneer Sandwich", "79"],
+          ["Paneer Cheese Sandwich", "89"],
+          ["DCC Special Sandwich", "99"],
+        ],
+
+        pasta: [
+          ["Red Sauce Pasta", "99"],
+          ["White Sauce Pasta", "119"],
+          ["Pink Sauce Pasta", "129"],
+        ],
+
+        burger: [
+          ["Aloo Tikki Burger", "49"],
+          ["Veg Tikki Burger", "59"],
+          ["Double Aloo Tikki", "69"],
+          ["Cheese Burger", "79"],
+          ["DCC Special Burger", "89"],
+        ],
+
+        shakes: [
+          ["Vanilla Shake", "69"],
+          ["Strawberry Shake", "69"],
+          ["Chocolate Shake", "79"],
+          ["Butter Scotch Shake", "79"],
+          ["Oreo Shake", "89"],
+          ["Kitkat Shake", "89"],
+          ["Paan Shake", "89"],
+          ["Rose Gulkand Shake", "89"],
+          ["Kesar Pista Shake", "99"],
+          ["Black Current Shake", "99"],
+        ],
+      };
+
+      /* ===========================================================
+   PAGE SWITCHING
+===========================================================*/
+
+      function openMenu(type) {
+        document.getElementById("homePage").classList.add("hidden");
+        document.getElementById("menuPage").classList.remove("hidden");
+
+        document.getElementById("backBtn").style.display = "inline";
+        document.getElementById("pageTitle").innerText = type.toUpperCase();
+
+        let box = document.getElementById("menuBox");
+        box.innerHTML = "";
+
+        menus[type].forEach((i) => {
+          box.innerHTML += `<div class="item"><span>${i[0]}</span><span>${i[1]}</span></div>`;
+        });
+
+        document.getElementById("menuName").innerText =
+          "🍽 " + type.charAt(0).toUpperCase() + type.slice(1) + " Menu";
+      }
+
+      function goHome() {
+        document.getElementById("menuPage").classList.add("hidden");
+        document.getElementById("homePage").classList.remove("hidden");
+        document.getElementById("backBtn").style.display = "none";
+        document.getElementById("pageTitle").innerText = "Friends Café";
+      }
+
+      /* ===========================================================
+   RANDOM LINK + POPUP
+===========================================================*/
+
+      const links = [
+        "https://fascinating-quokka-da72a9.netlify.app/",
+        "https://frabjous-bubblegum-0cecd9.netlify.app/",
+        "https://superlative-hotteok-888af7.netlify.app/",
+        "https://beautiful-buttercream-a1385c.netlify.app",
+        "https://lr2938650-svg.github.io/brithday-version/",
+        "https://lr2938650-svg.github.io/sorry/",
+      ];
+
+      const messages = [
+        "✨ A little surprise is waiting…",
+        "🌿 Yeh link tumhe smile de degi…",
+        "☕ Want to see something peaceful?",
+        "💫 Something special is hidden here…",
+        "❤️ Click karna… accha lagega.",
+      ];
+
+      setTimeout(() => {
+        let pop = document.getElementById("popup");
+        pop.style.display = "block";
+
+        document.getElementById("popupMsg").innerText =
+          messages[Math.floor(Math.random() * messages.length)];
+
+        pop.onclick = () => {
+          window.location.href =
+            links[Math.floor(Math.random() * links.length)];
+        };
+      }, 10000);
+    </script>
+  </body>
+</html>
+s
